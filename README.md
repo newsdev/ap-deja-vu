@@ -5,14 +5,14 @@
 
 ## Getting Started
 #### Install requirements
-```
+```bash
 mkvirtualenv ap-deja-vu && git clone git@github.com:newsdev/ap-deja-vu.git && cd ap-deja-vu
 pip install -r requirements.txt
 add2virtualenv ap_deja_vu
 ```
 
 #### Run The Server
-```
+```bash
 python -m ap_deja_vu.app
 ```
 
@@ -30,7 +30,7 @@ export AP_DEJAVU_DATA_DIRECTORY=/tmp/ap-elex-data/
 
 Your data directory should contain a series of folders corresponding to AP election dates. Within each of those folders, `ap-deja-vu` expects a series of files, named as UNIX timestamps. Really, any incrementing number or letter combination will work as long as the default sort produces the correct order. Each of these files should contain the output of the AP election API v2. Use this layout as a guide:
 
-```
+```bash
 /tmp/
     /ap-elex-data/
         /2015-02-01/
@@ -92,3 +92,11 @@ The route /<election_date>/status will return the status of a given
 election date test, including the current position in the hopper, the
 playback speed, and the path of the file that will be served at the current
 position.
+
+```javascript
+{
+    position: 0,
+    playback: 1,
+    file: "/tmp/ap-elex-data/2016-02-09/ap_elections_loader_recording-1449676507.json"
+}
+```
