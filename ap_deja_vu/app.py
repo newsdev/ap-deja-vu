@@ -43,7 +43,7 @@ def status(election_date):
     return json.dumps({
                 'playback': playback, 
                 'position': position,
-                'file': hopper[position]
+                'file': hopper[position-1]
             })
 
 @app.route("/<election_date>")
@@ -117,13 +117,13 @@ def replay(election_date):
 
     os.environ[election_key + '_PLAYBACK'] = str(playback)
 
-    if position + playback < len(hopper):
+    if position + playback < (len(hopper) - 1):
         os.environ[election_key + '_POSITION'] = str(position + playback)
 
     else:
         os.environ[election_key + '_POSITION'] = str(len(hopper))
 
-    with open(hopper[position], 'r') as readfile:
+    with open(hopper[position - 1], 'r') as readfile:
         payload = str(readfile.read())
 
     return payload
