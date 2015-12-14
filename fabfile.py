@@ -62,7 +62,7 @@ def pip_install():
 
 @api.task
 def bounce_daemon():
-    api.run('sudo service %s restart' % PROJECT_NAME
+    api.run('sudo service %s restart' % PROJECT_NAME)
 
 @api.task
 def deploy():
