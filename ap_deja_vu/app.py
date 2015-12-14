@@ -16,7 +16,7 @@ DATA_DIR = os.environ.get('AP_DEJAVU_DATA_DIRECTORY', '/tmp/')
 def favicon():
     return ''
 
-@app.route('/')
+@app.route('/ap-deja-vu/')
 def index():
     """
     Will match directories named like the following:
@@ -27,7 +27,7 @@ def index():
     context['elections'] = [a.split('/')[-1] for a in glob.glob('%s/*' % DATA_DIR) if re.match('(\d{2,4}[-]\d{2,4}[-]\d{2,4})', a.split('/')[-1])]
     return json.dumps(context)
 
-@app.route('/<election_date>/status')
+@app.route('/ap-deja-vu/<election_date>/status')
 def status(election_date):
     """
     The route /<election_date>/status will return the status of a given
@@ -48,7 +48,7 @@ def status(election_date):
                 'file': hopper[position-1]
             })
 
-@app.route('/<election_date>')
+@app.route('/ap-deja-vu/<election_date>')
 def replay(election_date):
     """
     The route `/<election_date>` will replay the election files found in the folder
