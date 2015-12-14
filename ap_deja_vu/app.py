@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 
+import argparse
 import glob
 import json
 import os
 import re
 
 from flask import Flask, render_template, request
+
 app = Flask(__name__)
 
 DATA_DIR = os.environ.get('AP_DEJAVU_DATA_DIRECTORY', '/tmp/')
 
-@app.route('/favicon.ico')
+@app.route('/ap-deja-vu/favicon.ico')
 def favicon():
     return ''
 
@@ -25,7 +27,7 @@ def index():
     context['elections'] = [a.split('/')[-1] for a in glob.glob('%s/*' % DATA_DIR) if re.match('(\d{2,4}[-]\d{2,4}[-]\d{2,4})', a.split('/')[-1])]
     return json.dumps(context)
 
-@app.route("/<election_date>/status")
+@app.route('/<election_date>/status')
 def status(election_date):
     """
     The route /<election_date>/status will return the status of a given
@@ -46,7 +48,7 @@ def status(election_date):
                 'file': hopper[position-1]
             })
 
-@app.route("/<election_date>")
+@app.route('/<election_date>')
 def replay(election_date):
     """
     The route `/<election_date>` will replay the election files found in the folder
@@ -129,6 +131,13 @@ def replay(election_date):
     return payload
 
 
-if __name__ == "__main__":
-    app.debug = True
-    app.run()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port')
+    args = parser.parse_args()
+    server_port = 8002
+
+    if args.port:
+        server_port = int(args.port)
+
+    app.run(host='0.0.0.0', port=server_port, debug=True)
