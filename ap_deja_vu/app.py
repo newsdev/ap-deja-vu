@@ -1,11 +1,14 @@
+#!/usr/bin/env python
+
 import glob
 import json
 import os
+import re
 
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-DATA_DIR = os.environ.get('AP_DEJAVU_DATA_DIRECTORY', None)
+DATA_DIR = os.environ.get('AP_DEJAVU_DATA_DIRECTORY', '/tmp/')
 
 @app.route('/favicon.ico')
 def favicon():
@@ -13,10 +16,13 @@ def favicon():
 
 @app.route('/')
 def index():
+    """
+    Will match directories named like the following:
+    2015-09-10
+    09-10-2015
+    """
     context = {}
-    context['elections'] = []
-    if DATA_DIR:
-        context['elections'] = [a.split('/')[-1] for a in glob.glob('%s*' % DATA_DIR)]
+    context['elections'] = [a.split('/')[-1] for a in glob.glob('%s/*' % DATA_DIR) if re.match('(\d{2,4}[-]\d{2,4}[-]\d{2,4})', a.split('/')[-1])]
     return json.dumps(context)
 
 @app.route("/<election_date>/status")
