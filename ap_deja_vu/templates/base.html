@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}Deja-Vu | NYT Elections</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="http://static01.nyt.com/favicon.ico">
+    <link href="http://chartmaker.em.nytimes.com/css/nyt5/zam5nzz-d.css" rel="stylesheet" media="screen">
+    <link href="{{ CDN_URL }}/adcom-nyt/0.2.0/dist/css/adcom-nyt.css" rel="stylesheet" media="screen">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <style type="text/css"> div#content { padding-top: 30px; } </style>
+  </head>
+  <body>
+
+    <div class="navbar navbar-default navbar-primary">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand">Elections 2016 <span style="color: rgb(237, 138, 63);">AP Deja-Vu</span></a>
+        </div>
+        <ul class="nav navbar-nav navbar-left">
+          <li class="navbar-summary">
+            <span style="color: #333;font-weight:400;font-family: nyt-franklin;">
+                Engine for replaying AP election tests</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="content" class="container">{% block content %}{% endblock %}</div>
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+    <script src="{{ CDN_URL}}/adcom-nyt/0.2.6/dist/js/adcom-nyt.js"></script>
+    {% block extrajs %}{% endblock %}
+  </body>
+</html>

@@ -8,26 +8,33 @@ import re
 
 from flask import Flask, render_template, request
 
+import utils
+
 app = Flask(__name__)
 
 DATA_DIR = os.environ.get('AP_DEJAVU_DATA_DIRECTORY', '/tmp/')
 
-@app.route('/ap-deja-vu/favicon.ico')
-def favicon():
-    return ''
-
-@app.route('/ap-deja-vu/')
+@app.route('/elections/2016/deja-vu/')
 def index():
     """
     Will match directories named like the following:
     2015-09-10
     09-10-2015
     """
-    context = {}
-    context['elections'] = [a.split('/')[-1] for a in glob.glob('%s/*' % DATA_DIR) if re.match('(\d{2,4}[-]\d{2,4}[-]\d{2,4})', a.split('/')[-1])]
-    return json.dumps(context)
+    context = utils.build_context()
+    context['elections'] = []
+    elections = [a.split('/')[-1] for a in glob.glob('%s/*' % DATA_DIR) if re.match('(\d{2,4}[-]\d{2,4}[-]\d{2,4})', a.split('/')[-1])]
+    for e in elections:
+        e_dict = {}
+        election_key = 'AP_DEJAVU_%s' % e
+        e_dict['election_date'] = e
+        e_dict['position'] = int(os.environ.get(election_key + '_POSITION', '0'))
+        e_dict['total_positions'] = len(glob.glob('%s%s/*' % (DATA_DIR, e)))
+        e_dict['playback'] = int(os.environ.get(election_key + '_PLAYBACK', '1'))
+        context['elections'].append(e_dict)
+    return render_template('index.html', **context)
 
-@app.route('/ap-deja-vu/<election_date>/status')
+@app.route('/elections/2016/deja-vu/<election_date>/status')
 def status(election_date):
     """
     The route /<election_date>/status will return the status of a given
@@ -48,7 +55,7 @@ def status(election_date):
                 'file': hopper[position-1]
             })
 
-@app.route('/ap-deja-vu/<election_date>')
+@app.route('/elections/2016/deja-vu/<election_date>')
 def replay(election_date):
     """
     The route `/<election_date>` will replay the election files found in the folder
@@ -120,7 +127,14 @@ def replay(election_date):
     os.environ[election_key + '_PLAYBACK'] = str(playback)
 
     if position + playback < (len(hopper) - 1):
-        os.environ[election_key + '_POSITION'] = str(position + playback)
+        """
+        Needs the if statement here to set the position truly to zero if it's specified
+        in the url params.
+        """
+        if request.args.get('position', None) or request.args.get('playback', None):
+            os.environ[election_key + '_POSITION'] = str(position)
+        else:
+            os.environ[election_key + '_POSITION'] = str(position + playback)
 
     else:
         os.environ[election_key + '_POSITION'] = str(len(hopper))

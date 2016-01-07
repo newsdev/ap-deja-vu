@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <p style="font-size: 24px;"><strong>AP Deja-Vu</strong> is an engine for replaying AP election tests. To use <strong>AP Deja-Vu</strong> with your <a href="https://github.com/newsdev/elex-loader">election loader</a> instance, export this environment variable to point your loader away from the AP and toward Deja-Vu.</p>
+        <p>
+            <pre>
+
+                <code>export AP_API_BASE_URL="http://campfin.newsdev.net/elections/2016/deja-vu/"</code>
+            </pre>
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h1>Available election tests</h1>
+        <table class="table">
+        <tr>
+            <th>Election date</th>
+            <th>URL</th>
+            <th>Position</th>
+            <th>Playback speed</th>
+        </tr>
+        {% for e in elections %}
+        <tr>
+            <td class="col-md-2"><a href="/elections/2016/deja-vu/{{ e.election_date }}">{{ e.election_date }}</a></td>
+            <td>http://campfin.newsdev.net/elections/2016/deja-vu/{{ e.election_date }}</td>
+            <td>
+                <strong>{{ e.position }}</strong>&nbsp;/&nbsp;{{ e.total_positions }}&nbsp;
+                <a class="ajax" id="position-zero" href="/elections/2016/deja-vu/{{ e.election_date }}">&#x21BA;</a>
+            </td>
+            <td>
+                <strong>{{ e.playback }}</strong>&nbsp;
+                <a class="ajax" id="playback-up" href="/elections/2016/deja-vu/{{ e.election_date }}">&uarr;</a>&nbsp;
+                <a class="ajax" id="playback-down" href="/elections/2016/deja-vu/{{ e.election_date }}">&darr;</a>&nbsp;
+                <a class="ajax" id="playback-one" href="/elections/2016/deja-vu/{{ e.election_date }}">&#x21BA;</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript">
+    $(function(){
+        var ajax_url = function(target, param_name, direction, url){
+            var params = {}
+            params[param_name] = parseInt($(target).text());
+
+            if (direction === "up") {
+                params[param_name] = params[param_name] + 1;
+            };
+            if (direction === "down") {
+                params[param_name] = params[param_name] - 1;
+            };
+            if (direction == "zero") {
+                params[param_name] = 0;
+            };
+            if (direction == "one") {
+                params[param_name] = 1;
+            };
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: params,
+                success: function(response){ target.text(params[param_name]); console.log(params, "success") }
+            });
+
+        };
+
+        var ajax_click_handler = function(el){
+            el.preventDefault();
+            $el = $(this);
+            ajax_url(
+                $el.parent('td').find('strong'),
+                $el.attr('id').split('-')[0],
+                $el.attr('id').split('-')[1],
+                $el.attr('href')
+            );
+        };
+
+        $('a.ajax').on('click', ajax_click_handler);
+    });
+</script>
+{% endblock %}
