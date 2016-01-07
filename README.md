@@ -8,6 +8,9 @@
 
 Contact your AP support representative to get an up-to-date schedule for election tests. Typically, they occur on Wednesdays and Fridays between 11am and noon EST.
 
+## User interface
+![screen shot 2016-01-07 at 3 22 46 pm](https://cloud.githubusercontent.com/assets/109988/12181841/961c0c2a-b552-11e5-8ff9-be18957bee24.png)
+
 ## Getting Started
 #### Install requirements
 ```bash
