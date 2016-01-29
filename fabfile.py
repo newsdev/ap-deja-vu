@@ -61,11 +61,11 @@ def pip_install():
     api.run('workon %s && pip install -r requirements.txt' % PROJECT_NAME)
 
 @api.task
-def bounce_daemon():
+def bounce():
     api.run('sudo service %s restart' % PROJECT_NAME)
 
 @api.task
 def deploy():
     pull()
     pip_install()
-    bounce_daemon()
+    bounce()
