@@ -4,15 +4,27 @@ import argparse
 import glob
 import json
 import os
+import random
 import re
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response
 
 import utils
 
 app = Flask(__name__)
 
 DATA_DIR = os.environ.get('AP_DEJAVU_DATA_DIRECTORY', '/tmp/')
+
+RATELIMITED_STRING = """
+<Error xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+<Code>403</Code>
+<Message>Over quota limit.</Message>
+<link href="https://developer.ap.org/api-console" rel="help"/>
+</Error>
+"""
+
+RATELIMITED_HEADERS = {"Connection": "keep-alive","Content-Length": 199,"Content-Type": "text/xml","Date": "Fri, 29 Jan 2016 16:54:17 GMT","Server": "Apigee Router"}
+ERRORMODE_HEADERS = {"Connection": "keep-alive","Content-Type": "text/json","Date": "Fri, 29 Jan 2016 16:54:17 GMT","Server": "Apigee Router"}
 
 @app.route('/elections/2016/deja-vu/')
 def index():
@@ -31,6 +43,8 @@ def index():
         e_dict['position'] = int(os.environ.get(election_key + '_POSITION', '0'))
         e_dict['total_positions'] = len(glob.glob('%s%s/*' % (DATA_DIR, e)))
         e_dict['playback'] = int(os.environ.get(election_key + '_PLAYBACK', '1'))
+        e_dict['errormode'] = utils.to_bool(os.environ.get(election_key + '_ERRORMODE', 'False'))
+        e_dict['ratelimited'] = utils.to_bool(os.environ.get(election_key + '_RATELIMITED', 'False'))
         context['elections'].append(e_dict)
     return render_template('index.html', **context)
 
@@ -48,10 +62,14 @@ def status(election_date):
 
     position = int(os.environ.get(election_key + '_POSITION', '0'))
     playback = int(os.environ.get(election_key + '_PLAYBACK', '1'))
+    errormode = utils.to_bool(os.environ.get(election_key + '_ERRORMODE', 'False'))
+    ratelimited = utils.to_bool(os.environ.get(election_key + '_RATELIMITED', 'False'))
 
     return json.dumps({
                 'playback': playback, 
                 'position': position,
+                'errormode': errormode,
+                'ratelimited': ratelimited,
                 'file': hopper[position-1]
             })
 
@@ -104,6 +122,27 @@ def replay(election_date):
     position = int(os.environ.get(election_key + '_POSITION', '0'))
     playback = int(os.environ.get(election_key + '_PLAYBACK', '1'))
 
+    errormode = utils.to_bool(os.environ.get(election_key + '_ERRORMODE', 'False'))
+    ratelimited = utils.to_bool(os.environ.get(election_key + '_RATELIMITED', 'False'))
+
+    if request.args.get('errormode', None):
+        if request.args.get('errormode', None) == 'true':
+            os.environ[election_key + '_ERRORMODE'] = 'True'
+            errormode = True
+
+        if request.args.get('errormode', None) == 'false':
+            os.environ[election_key + '_ERRORMODE'] = 'False'
+            errormode = False
+
+    if request.args.get('ratelimited', None):
+        if request.args.get('ratelimited', None) == 'true':
+            os.environ[election_key + '_RATELIMITED'] = 'True'
+            ratelimited = True
+
+        if request.args.get('ratelimited', None) == 'false':
+            os.environ[election_key + '_RATELIMITED'] = 'False'
+            ratelimited = False
+
     if request.args.get('playback', None):
         try:
             playback = abs(int(request.args.get('playback', None)))
@@ -126,12 +165,22 @@ def replay(election_date):
 
     os.environ[election_key + '_PLAYBACK'] = str(playback)
 
+    if request.args.get('ratelimited', None) or request.args.get('errormode', None):
+        return json.dumps({"success": True})
+    else:
+        if ratelimited:
+            return make_response((RATELIMITED_STRING, 403, RATELIMITED_HEADERS))
+
+        if errormode:
+            if random.randrange(1,3) % 2 == 0:
+                return make_response(json.dumps({"status": 500, "error": True}), 500, ERRORMODE_HEADERS)
+
     if position + playback < (len(hopper) - 1):
         """
         Needs the if statement here to set the position truly to zero if it's specified
         in the url params.
         """
-        if request.args.get('position', None) or request.args.get('playback', None):
+        if request.args.get('position', None) or request.args.get('playback', None) or request.args.get('ratelimited', None) or request.args.get('errormode', None):
             os.environ[election_key + '_POSITION'] = str(position)
         else:
             os.environ[election_key + '_POSITION'] = str(position + playback)

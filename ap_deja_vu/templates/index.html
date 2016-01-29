@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style type="text/css">
+    a.ajax-toggle  {
+        font-weight: bold;
+        font-style: normal;
+        color: rgb(91, 129, 0);
+    }
+    a.mode-off {
+        color: rgb(210, 210, 210);
+        font-style: italic;
+        font-weight: normal;
+    }
+</style>
 <div class="row">
     <div class="col-md-12">
         <p style="font-size: 24px;"><strong>AP Deja-Vu</strong> is an engine for replaying AP election tests. To use <strong>AP Deja-Vu</strong> with your <a href="https://github.com/newsdev/elex-loader">election loader</a> instance, export this environment variable to point your loader away from the AP and toward Deja-Vu.</p>
@@ -21,6 +33,7 @@
             <th>URL</th>
             <th>Position</th>
             <th>Playback speed</th>
+            <th>Error mode</th>
         </tr>
         {% for e in elections %}
         <tr>
@@ -36,6 +49,10 @@
                 <a class="ajax" id="playback-down" href="/elections/2016/deja-vu/{{ e.election_date }}">&darr;</a>&nbsp;
                 <a class="ajax" id="playback-one" href="/elections/2016/deja-vu/{{ e.election_date }}">&#x21BA;</a>
             </td>
+            <td>
+                <a class="{% if e.errormode %}{% else %}mode-off {% endif %}ajax-toggle" id="errormode" href="/elections/2016/deja-vu/{{ e.election_date }}">500</a>&nbsp;&nbsp;
+                <a class="{% if e.ratelimited %}{% else %}mode-off {% endif %}ajax-toggle" id="ratelimited" href="/elections/2016/deja-vu/{{ e.election_date }}">403</a>
+            </td>
         </tr>
         {% endfor %}
     </div>
@@ -48,7 +65,6 @@
         var ajax_url = function(target, param_name, direction, url){
             var params = {}
             params[param_name] = parseInt($(target).text());
-
             if (direction === "up") {
                 params[param_name] = params[param_name] + 1;
             };
@@ -81,7 +97,27 @@
             );
         };
 
+        var ajax_toggle_handler = function(el) {
+            el.preventDefault();
+            $el = $(this);
+            params = {}
+            params[$el.attr('id')] = false
+            if ($el.hasClass('mode-off')) {
+                params[$el.attr('id')] = true
+            }
+            $.ajax({
+                type: "GET",
+                url: $el.attr('href'),
+                data: params,
+                success: function(response){
+                    console.log(params, 'success');
+                    $el.toggleClass('mode-off');
+                }
+            })
+        }
+
         $('a.ajax').on('click', ajax_click_handler);
+        $('a.ajax-toggle').on('click', ajax_toggle_handler);
     });
 </script>
 {% endblock %}

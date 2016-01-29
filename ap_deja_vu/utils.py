@@ -9,3 +9,7 @@ def build_context():
     context = {}
     context['CDN_URL'] = CDN_URL
     return dict(context)
+
+def to_bool(v):
+    print v
+    return v.lower() in ("yes", "true", "t", "1")
