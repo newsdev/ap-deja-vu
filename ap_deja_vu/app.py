@@ -48,7 +48,7 @@ def index():
         context['elections'].append(e_dict)
     return render_template('index.html', **context)
 
-@app.route('/elections/2016/deja-vu/<election_date>/status')
+@app.route('/elections/2016/deja-vu/elections/<election_date>/status')
 def status(election_date):
     """
     The route /<election_date>/status will return the status of a given
@@ -73,7 +73,23 @@ def status(election_date):
                 'file': hopper[position-1]
             })
 
-@app.route('/elections/2016/deja-vu/<election_date>')
+@app.route('/elections/2016/deja-vu/reports/<reportid>')
+def delegates(reportid):
+    if reportid == "1":
+        with open('delSum.json', 'r') as readfile:
+            payload = str(readfile.read())
+
+    elif reportid == "2":
+        with open('delSuper.json', 'r') as readfile:
+            payload = str(readfile.read())
+
+    return payload
+
+@app.route('/elections/2016/deja-vu/reports')
+def reports():
+    return json.dumps({"reports": [{"id": "1", "title": "Delegates / delsum"},{"id": "2", "title": "Delegates / delsuper"}]})
+
+@app.route('/elections/2016/deja-vu/elections/<election_date>')
 def replay(election_date):
     """
     The route `/<election_date>` will replay the election files found in the folder
