@@ -30,28 +30,26 @@
         <table class="table">
         <tr>
             <th>Election date</th>
-            <th>URL</th>
             <th>Position</th>
             <th>Playback speed</th>
             <th>Error mode</th>
         </tr>
         {% for e in elections %}
         <tr>
-            <td class="col-md-2"><a href="/elections/2016/deja-vu/{{ e.election_date }}">{{ e.election_date }}</a></td>
-            <td>http://campfin.newsdev.net/elections/2016/deja-vu/{{ e.election_date }}</td>
+            <td class="col-md-2"><a href="/elections/2016/deja-vu/elections/{{ e.election_date }}">{{ e.election_date }}</a></td>
             <td>
                 <strong>{{ e.position }}</strong>&nbsp;/&nbsp;{{ e.total_positions }}&nbsp;
-                <a class="ajax" id="position-zero" href="/elections/2016/deja-vu/{{ e.election_date }}">&#x21BA;</a>
+                <a class="ajax" id="position-zero" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">&#x21BA;</a>
             </td>
             <td>
                 <strong>{{ e.playback }}</strong>&nbsp;
-                <a class="ajax" id="playback-up" href="/elections/2016/deja-vu/{{ e.election_date }}">&uarr;</a>&nbsp;
-                <a class="ajax" id="playback-down" href="/elections/2016/deja-vu/{{ e.election_date }}">&darr;</a>&nbsp;
-                <a class="ajax" id="playback-one" href="/elections/2016/deja-vu/{{ e.election_date }}">&#x21BA;</a>
+                <a class="ajax" id="playback-up" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">&uarr;</a>&nbsp;
+                <a class="ajax" id="playback-down" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">&darr;</a>&nbsp;
+                <a class="ajax" id="playback-one" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">&#x21BA;</a>
             </td>
             <td>
-                <a class="{% if e.errormode %}{% else %}mode-off {% endif %}ajax-toggle" id="errormode" href="/elections/2016/deja-vu/{{ e.election_date }}">500</a>&nbsp;&nbsp;
-                <a class="{% if e.ratelimited %}{% else %}mode-off {% endif %}ajax-toggle" id="ratelimited" href="/elections/2016/deja-vu/{{ e.election_date }}">403</a>
+                <a class="{% if e.errormode %}{% else %}mode-off {% endif %}ajax-toggle" id="errormode" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">500</a>&nbsp;&nbsp;
+                <a class="{% if e.ratelimited %}{% else %}mode-off {% endif %}ajax-toggle" id="ratelimited" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">403</a>
             </td>
         </tr>
         {% endfor %}
