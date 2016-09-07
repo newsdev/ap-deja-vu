@@ -35,21 +35,21 @@
             <th>Error mode</th>
         </tr>
         {% for e in elections %}
-        <tr>
-            <td class="col-md-2"><a href="/elections/2016/deja-vu/elections/{{ e.election_date }}">{{ e.election_date }}</a></td>
-            <td>
+        <tr id="election-{{ e.election_date }}">
+            <td class="col-md-2"><a href="/elections/2016/deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}">{{ e.title }}</a></td>
+            <td class="position">
                 <strong>{{ e.position }}</strong>&nbsp;/&nbsp;{{ e.total_positions }}&nbsp;
-                <a class="ajax" id="position-zero" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">&#x21BA;</a>
+                <a class="ajax" id="position-zero" href="/elections/2016/deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}">&#x21BA;</a>
             </td>
-            <td>
+            <td class="playback">
                 <strong>{{ e.playback }}</strong>&nbsp;
-                <a class="ajax" id="playback-up" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">&uarr;</a>&nbsp;
-                <a class="ajax" id="playback-down" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">&darr;</a>&nbsp;
-                <a class="ajax" id="playback-one" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">&#x21BA;</a>
+                <a class="ajax" id="playback-up" href="/elections/2016/deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}">&uarr;</a>&nbsp;
+                <a class="ajax" id="playback-down" href="/elections/2016/deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}">&darr;</a>&nbsp;
+                <a class="ajax" id="playback-one" href="/elections/2016/deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}">&#x21BA;</a>
             </td>
-            <td>
-                <a class="{% if e.errormode %}{% else %}mode-off {% endif %}ajax-toggle" id="errormode" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">500</a>&nbsp;&nbsp;
-                <a class="{% if e.ratelimited %}{% else %}mode-off {% endif %}ajax-toggle" id="ratelimited" href="/elections/2016/deja-vu/elections/{{ e.election_date }}">403</a>
+            <td class="errormode">
+                <a class="{% if e.errormode %}{% else %}mode-off {% endif %}ajax-toggle" id="errormode" href="/elections/2016/deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}">500</a>&nbsp;&nbsp;
+                <a class="{% if e.ratelimited %}{% else %}mode-off {% endif %}ajax-toggle" id="ratelimited" href="/elections/2016/deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}">403</a>
             </td>
         </tr>
         {% endfor %}
@@ -60,9 +60,9 @@
 {% block extrajs %}
 <script type="text/javascript">
     $(function(){
-        var ajax_url = function(target, param_name, direction, url){
+        var ajax_url = function(racedate, action, param_name, direction, url){
             var params = {}
-            params[param_name] = parseInt($(target).text());
+            params[param_name] = parseInt($($('#' + racedate + ' .' + action + ' strong')[0]).text());
             if (direction === "up") {
                 params[param_name] = params[param_name] + 1;
             };
@@ -79,7 +79,10 @@
                 type: "GET",
                 url: url,
                 data: params,
-                success: function(response){ target.text(params[param_name]); console.log(params, "success") }
+                success: function(response){
+                    $($('#' + racedate + ' .' + action + ' strong')[0]).text(params[param_name]); 
+                    $($('#' + racedate + ' .' + action + ' strong')[1]).text(params[param_name]); 
+                }
             });
 
         };
@@ -87,8 +90,11 @@
         var ajax_click_handler = function(el){
             el.preventDefault();
             $el = $(this);
+            var RACEDATE = $el.parent('td').parent('tr').attr('id');
+            var ACTION = $el.parent('td').attr('class');
             ajax_url(
-                $el.parent('td').find('strong'),
+                RACEDATE,
+                ACTION,
                 $el.attr('id').split('-')[0],
                 $el.attr('id').split('-')[1],
                 $el.attr('href')

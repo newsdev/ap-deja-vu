@@ -11,5 +11,4 @@ def build_context():
     return dict(context)
 
 def to_bool(v):
-    print v
     return v.lower() in ("yes", "true", "t", "1")

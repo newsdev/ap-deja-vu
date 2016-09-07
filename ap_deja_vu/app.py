@@ -36,16 +36,24 @@ def index():
     context = utils.build_context()
     context['elections'] = []
     elections = sorted([a.split('/')[-1] for a in glob.glob('%s/*' % DATA_DIR) if re.match('(\d{2,4}[-]\d{2,4}[-]\d{2,4})', a.split('/')[-1])], key=lambda x:x)
+
     for e in elections:
-        e_dict = {}
-        election_key = 'AP_DEJAVU_%s' % e
-        e_dict['election_date'] = e
-        e_dict['position'] = int(os.environ.get(election_key + '_POSITION', '0'))
-        e_dict['total_positions'] = len(glob.glob('%s%s/*' % (DATA_DIR, e)))
-        e_dict['playback'] = int(os.environ.get(election_key + '_PLAYBACK', '1'))
-        e_dict['errormode'] = utils.to_bool(os.environ.get(election_key + '_ERRORMODE', 'False'))
-        e_dict['ratelimited'] = utils.to_bool(os.environ.get(election_key + '_RATELIMITED', 'False'))
-        context['elections'].append(e_dict)
+        for level in ['local', 'national']:
+            national = False
+            if level == 'national':
+                national = True
+            e_dict = {}
+            election_key = 'AP_DEJAVU_%s' % e
+            e_dict['election_date'] = e
+            e_dict['national'] = national
+            e_dict['level'] = level
+            e_dict['title'] = "%s [%s]" % (e, level)
+            e_dict['position'] = int(os.environ.get(election_key + '_POSITION', '0'))
+            e_dict['total_positions'] = len(glob.glob('%s%s/%s/*' % (DATA_DIR, e, level)))
+            e_dict['playback'] = int(os.environ.get(election_key + '_PLAYBACK', '1'))
+            e_dict['errormode'] = utils.to_bool(os.environ.get(election_key + '_ERRORMODE', 'False'))
+            e_dict['ratelimited'] = utils.to_bool(os.environ.get(election_key + '_RATELIMITED', 'False'))
+            context['elections'].append(e_dict)
     return render_template('index.html', **context)
 
 @app.route('/elections/2016/deja-vu/elections/<election_date>/status')
@@ -56,9 +64,20 @@ def status(election_date):
     playback speed, and the path of the file that will be served at the current
     position.
     """
+
+    if request.args.get('national', None):
+        LEVEL='local'
+        if request.args['national'].lower() == 'true':
+            LEVEL = 'national'
+    else:
+        return json.dumps({
+            'error': True,
+            'message': 'must specify national=true or national=false'
+        })
+
     election_key = 'AP_DEJAVU_%s' % election_date
 
-    hopper = sorted(glob.glob('%s%s/*' % (DATA_DIR, election_date)), key=lambda x:x.split('recording-')[1])
+    hopper = sorted(glob.glob('%s%s/%s/*' % (DATA_DIR, election_date, LEVEL)), key=lambda x:x.split('recording-')[1])
 
     position = int(os.environ.get(election_key + '_POSITION', '0'))
     playback = int(os.environ.get(election_key + '_PLAYBACK', '1'))
@@ -70,7 +89,8 @@ def status(election_date):
                 'position': position,
                 'errormode': errormode,
                 'ratelimited': ratelimited,
-                'file': hopper[position-1]
+                'file': hopper[position-1],
+                'level': LEVEL
             })
 
 @app.route('/elections/2016/deja-vu/reports/<reportid>')
@@ -131,9 +151,20 @@ def replay(election_date):
     Requesting /<election_date>?position=0&playback=1 will reset to the default position
     and playback speeds, respectively.
     """
+
+    if request.args.get('national', None):
+        LEVEL='local'
+        if request.args['national'].lower() == 'true':
+            LEVEL = 'national'
+    else:
+        return json.dumps({
+            'error': True,
+            'message': 'must specify national=true or national=false'
+        })
+
     election_key = 'AP_DEJAVU_%s' % election_date
 
-    hopper = sorted(glob.glob('%s%s/*' % (DATA_DIR, election_date)), key=lambda x:x.split('recording-')[1])
+    hopper = sorted(glob.glob('%s%s/%s/*' % (DATA_DIR, election_date, LEVEL)), key=lambda x:x.split('recording-')[1])
 
     position = int(os.environ.get(election_key + '_POSITION', '0'))
     playback = int(os.environ.get(election_key + '_PLAYBACK', '1'))
