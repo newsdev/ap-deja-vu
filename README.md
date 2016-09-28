@@ -13,6 +13,23 @@ Contact your AP support representative to get an up-to-date schedule for electio
 
 ## Getting Started
 #### Install requirements
+
+Note: Requires a running redis instance on localhost. Install with homebrew (development on a Mac) or via apt-get (production use on an Ubuntu-based server).
+
+##### Mac
+Note: Requires (Homebrew)[].
+```
+brew install redis
+brew services start redis
+```
+
+##### Ubuntu Linux
+```
+Sudo apt-get install redis-server
+```
+
+#### Install this app
+
 ```bash
 mkvirtualenv ap-deja-vu && git clone git@github.com:newsdev/ap-deja-vu.git && cd ap-deja-vu
 pip install -r requirements.txt
