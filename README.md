@@ -3,10 +3,12 @@
 
 `ap-deja-vu` is a small web service that will replay JSON from an AP election test. `ap-deja-vu` does not require a database for persistence and does not write to the filesystem.
 
-## Important Note
+## Important Notes
 `ap-deja-vu` requires that you have **already recorded** an AP election test to JSON files. [Elex](http://elex.readthedocs.org/en/latest/recording.html#flat-files) is highly recommended for this process.
 
 Contact your AP support representative to get an up-to-date schedule for election tests. Typically, they occur on Wednesdays and Fridays between 11am and noon EST.
+
+This software assumes you have two AP API keys; one for national data, and one for local data.
 
 ## User interface
 ![screen shot 2016-01-29 at 1 04 07 pm](https://cloud.githubusercontent.com/assets/109988/12683723/d2134152-c688-11e5-8ac1-9c65a2a3c33a.png)
@@ -14,10 +16,12 @@ Contact your AP support representative to get an up-to-date schedule for electio
 ## Getting Started
 #### Install requirements
 
-Note: Requires a running redis instance on localhost. Install with homebrew (development on a Mac) or via apt-get (production use on an Ubuntu-based server).
+`ap-deja-vu` requires a running redis instance on localhost. Install with homebrew (development on a Mac) or via apt-get (production use on an Ubuntu-based server).
 
 ##### Mac
-Note: Requires (Homebrew)[].
+
+Requires (Homebrew)[http://brew.sh/index.html].
+
 ```
 brew install redis
 brew services start redis
@@ -77,8 +81,6 @@ Your data directory should contain a series of folders corresponding to AP elect
                     002.json
                     003.json
 ```
-
-*Note*: This software assumes you have two AP API keys; one for national data, and one for local data.
 
 We recommend The New York Times's [Elex-loader](https://github.com/newsdev/elex-loader/) for capturing and parsing AP election data. Pay particular attention to [the `get_national_results` and `get_local_results` functions in this script](https://github.com/newsdev/elex-loader/blob/master/scripts/stg/_results.sh). 
 
