@@ -4,11 +4,9 @@
 `ap-deja-vu` is a small web service that will replay JSON from an AP election test. `ap-deja-vu` does not require a database for persistence and does not write to the filesystem.
 
 ## Important Notes
-`ap-deja-vu` requires that you have **already recorded** an AP election test to JSON files. [Elex](http://elex.readthedocs.org/en/latest/recording.html#flat-files) is highly recommended for this process.
+* `ap-deja-vu` requires that you have **already recorded** an AP election test to JSON files. [Elex](http://elex.readthedocs.org/en/latest/recording.html#flat-files) is highly recommended for this process. Contact your AP support representative to get an up-to-date schedule for election tests.
 
-Contact your AP support representative to get an up-to-date schedule for election tests. Typically, they occur on Wednesdays and Fridays between 11am and noon EST.
-
-This software assumes you have two AP API keys; one for national data, and one for local data.
+* This software assumes you have two AP API keys; one for national data, and one for local data.
 
 ## User interface
 ![screen shot 2016-01-29 at 1 04 07 pm](https://cloud.githubusercontent.com/assets/109988/18929526/d692e718-8592-11e6-92a0-18942120cac8.png)
