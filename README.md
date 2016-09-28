@@ -11,7 +11,7 @@ Contact your AP support representative to get an up-to-date schedule for electio
 This software assumes you have two AP API keys; one for national data, and one for local data.
 
 ## User interface
-![screen shot 2016-01-29 at 1 04 07 pm](https://cloud.githubusercontent.com/assets/109988/12683723/d2134152-c688-11e5-8ac1-9c65a2a3c33a.png)
+![screen shot 2016-01-29 at 1 04 07 pm](https://cloud.githubusercontent.com/assets/109988/18929526/d692e718-8592-11e6-92a0-18942120cac8.png)
 
 ## Getting Started
 #### Install requirements
