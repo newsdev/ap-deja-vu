@@ -8,6 +8,7 @@ import random
 import re
 
 from flask import Flask, render_template, request, make_response
+import redis
 
 import utils
 
@@ -25,6 +26,9 @@ RATELIMITED_STRING = """
 
 RATELIMITED_HEADERS = {"Connection": "keep-alive","Content-Length": 199,"Content-Type": "text/xml","Date": "Fri, 29 Jan 2016 16:54:17 GMT","Server": "Apigee Router"}
 ERRORMODE_HEADERS = {"Connection": "keep-alive","Content-Type": "text/json","Date": "Fri, 29 Jan 2016 16:54:17 GMT","Server": "Apigee Router"}
+
+r_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
+
 
 @app.route('/elections/2016/deja-vu/')
 def index():
@@ -48,11 +52,11 @@ def index():
             e_dict['national'] = national
             e_dict['level'] = level
             e_dict['title'] = "%s [%s]" % (e, level)
-            e_dict['position'] = int(os.environ.get(election_key + '_POSITION', '0'))
+            e_dict['position'] = int(r_conn.get(election_key + '_POSITION') or 0)
             e_dict['total_positions'] = len(glob.glob('%s%s/%s/*' % (DATA_DIR, e, level)))
-            e_dict['playback'] = int(os.environ.get(election_key + '_PLAYBACK', '1'))
-            e_dict['errormode'] = utils.to_bool(os.environ.get(election_key + '_ERRORMODE', 'False'))
-            e_dict['ratelimited'] = utils.to_bool(os.environ.get(election_key + '_RATELIMITED', 'False'))
+            e_dict['playback'] = int(r_conn.get(election_key + '_PLAYBACK') or 1)
+            e_dict['errormode'] = utils.to_bool(r_conn.get(election_key + '_ERRORMODE') or 'False')
+            e_dict['ratelimited'] = utils.to_bool(r_conn.get(election_key + '_RATELIMITED') or 'False')
             context['elections'].append(e_dict)
     return render_template('index.html', **context)
 
@@ -79,10 +83,10 @@ def status(election_date):
 
     hopper = sorted(glob.glob('%s%s/%s/*' % (DATA_DIR, election_date, LEVEL)), key=lambda x:x.split('recording-')[1])
 
-    position = int(os.environ.get(election_key + '_POSITION', '0'))
-    playback = int(os.environ.get(election_key + '_PLAYBACK', '1'))
-    errormode = utils.to_bool(os.environ.get(election_key + '_ERRORMODE', 'False'))
-    ratelimited = utils.to_bool(os.environ.get(election_key + '_RATELIMITED', 'False'))
+    position = int(r_conn.get(election_key + '_POSITION') or 0)
+    playback = int(r_conn.get(election_key + '_PLAYBACK') or 1)
+    errormode = utils.to_bool(r_conn.get(election_key + '_ERRORMODE') or 'False')
+    ratelimited = utils.to_bool(r_conn.get(election_key + '_RATELIMITED') or 'False')
 
     return json.dumps({
                 'playback': playback, 
@@ -166,28 +170,28 @@ def replay(election_date):
 
     hopper = sorted(glob.glob('%s%s/%s/*' % (DATA_DIR, election_date, LEVEL)), key=lambda x:x.split('recording-')[1])
 
-    position = int(os.environ.get(election_key + '_POSITION', '0'))
-    playback = int(os.environ.get(election_key + '_PLAYBACK', '1'))
+    position = int(r_conn.get(election_key + '_POSITION') or 0)
+    playback = int(r_conn.get(election_key + '_PLAYBACK') or 1)
 
-    errormode = utils.to_bool(os.environ.get(election_key + '_ERRORMODE', 'False'))
-    ratelimited = utils.to_bool(os.environ.get(election_key + '_RATELIMITED', 'False'))
+    errormode = utils.to_bool(r_conn.get(election_key + '_ERRORMODE') or 'False')
+    ratelimited = utils.to_bool(r_conn.get(election_key + '_RATELIMITED') or 'False')
 
     if request.args.get('errormode', None):
         if request.args.get('errormode', None) == 'true':
-            os.environ[election_key + '_ERRORMODE'] = 'True'
+            r_conn.set(election_key + '_ERRORMODE', 'True')
             errormode = True
 
         if request.args.get('errormode', None) == 'false':
-            os.environ[election_key + '_ERRORMODE'] = 'False'
+            r_conn.set(election_key + '_ERRORMODE', 'False')
             errormode = False
 
     if request.args.get('ratelimited', None):
         if request.args.get('ratelimited', None) == 'true':
-            os.environ[election_key + '_RATELIMITED'] = 'True'
+            r_conn.set(election_key + '_RATELIMITED', 'True')
             ratelimited = True
 
         if request.args.get('ratelimited', None) == 'false':
-            os.environ[election_key + '_RATELIMITED'] = 'False'
+            r_conn.set(election_key + '_RATELIMITED', 'False')
             ratelimited = False
 
     if request.args.get('playback', None):
@@ -210,7 +214,7 @@ def replay(election_date):
                     'message': 'position must be an integer greater than 0.'
                 })
 
-    os.environ[election_key + '_PLAYBACK'] = str(playback)
+    r_conn.set(election_key + '_PLAYBACK', str(playback))
 
     if request.args.get('ratelimited', None) or request.args.get('errormode', None):
         return json.dumps({"success": True})
@@ -228,12 +232,12 @@ def replay(election_date):
         in the url params.
         """
         if request.args.get('position', None) or request.args.get('playback', None) or request.args.get('ratelimited', None) or request.args.get('errormode', None):
-            os.environ[election_key + '_POSITION'] = str(position)
+            r_conn.set(election_key + '_POSITION', str(position))
         else:
-            os.environ[election_key + '_POSITION'] = str(position + playback)
+            r_conn.set(election_key + '_POSITION', str(position + playback))
 
     else:
-        os.environ[election_key + '_POSITION'] = str(len(hopper))
+        r_conn.set(election_key + '_POSITION', str(len(hopper)))
 
     with open(hopper[position - 1], 'r') as readfile:
         payload = str(readfile.read())
