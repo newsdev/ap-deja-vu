@@ -20,7 +20,7 @@ This software assumes you have two AP API keys; one for national data, and one f
 
 ##### Mac
 
-Requires (Homebrew)[http://brew.sh/index.html].
+Requires [Homebrew](http://brew.sh/index.html).
 
 ```
 brew install redis
