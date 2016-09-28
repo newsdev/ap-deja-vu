@@ -4,7 +4,7 @@
 `ap-deja-vu` is a small web service that will replay JSON from an AP election test. `ap-deja-vu` does not require a database for persistence and does not write to the filesystem.
 
 ## Important Notes
-* `ap-deja-vu` requires that you have **already recorded** an AP election test to JSON files. [Elex](http://elex.readthedocs.org/en/latest/recording.html#flat-files) is highly recommended for this process. Contact your AP support representative to get an up-to-date schedule for election tests.
+* `ap-deja-vu` requires that you have **already recorded** an AP election test to JSON files. [Elex-loader](https://github.com/newsdev/elex-loader/) is highly recommended for this process. Contact your AP support representative to get an up-to-date schedule for election tests.
 
 * This software assumes you have two AP API keys; one for national data, and one for local data.
 
@@ -80,7 +80,7 @@ Your data directory should contain a series of folders corresponding to AP elect
                     003.json
 ```
 
-We recommend The New York Times's [Elex-loader](https://github.com/newsdev/elex-loader/) for capturing and parsing AP election data. Pay particular attention to [the `get_national_results` and `get_local_results` functions in this script](https://github.com/newsdev/elex-loader/blob/master/scripts/stg/_results.sh). 
+We recommend The New York Times's [Elex-loader](https://github.com/newsdev/elex-loader/) for capturing and parsing AP election data. Pay particular attention to the `get_national_results` and `get_local_results` functions [in this script](https://github.com/newsdev/elex-loader/blob/master/scripts/stg/_results.sh). 
 
 #### Playback
 
