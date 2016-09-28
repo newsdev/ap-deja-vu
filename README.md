@@ -78,6 +78,8 @@ Your data directory should contain a series of folders corresponding to AP elect
                     003.json
 ```
 
+*Note*: This software assumes you have two AP API keys; one for national data, and one for local data.
+
 We recommend The New York Times's [Elex-loader](https://github.com/newsdev/elex-loader/) for capturing and parsing AP election data. Pay particular attention to [the `get_national_results` and `get_local_results` functions in this script](https://github.com/newsdev/elex-loader/blob/master/scripts/stg/_results.sh). 
 
 #### Playback
@@ -104,21 +106,21 @@ app is restarted OR a new pair of control parameters are passed.
 Example: Let's say you would like to test an election at 10x speed. You have 109
 files in your `/<DATA_DIR>/<election_date>/` folder named 001.json through 109.json
 
-* Request 1: `/<election_date>?position=0&playback=10` > 001.json
-* Request 2: `/<election_date>` > 011.json
-* Request 3: `/<election_date>` > 021.json
-* Request 4: `/<election_date>` > 031.json
-* Request 5: `/<election_date>` > 041.json
-* Request 6: `/<election_date>` > 051.json
-* Request 7: `/<election_date>` > 061.json
-* Request 8: `/<election_date>` > 071.json
-* Request 9: `/<election_date>` > 081.json
-* Request 10: `/<election_date>` > 091.json
-* Request 11: `/<election_date>` > 101.json
-* Request 12: `/<election_date>` > 109.json
-* Request 13 - ???: `/<election_date>` > 109.json
+* Request 1: `/<election_date>?position=0&playback=10&national=true` > 001.json
+* Request 2: `/<election_date>?national=true` > 011.json
+* Request 3: `/<election_date>?national=true` > 021.json
+* Request 4: `/<election_date>?national=true` > 031.json
+* Request 5: `/<election_date>?national=true` > 041.json
+* Request 6: `/<election_date>?national=true` > 051.json
+* Request 7: `/<election_date>?national=true` > 061.json
+* Request 8: `/<election_date>?national=true` > 071.json
+* Request 9: `/<election_date>?national=true` > 081.json
+* Request 10: `/<election_date>?national=true` > 091.json
+* Request 11: `/<election_date>?national=true` > 101.json
+* Request 12: `/<election_date>?national=true` > 109.json
+* Request 13 - ???: `/<election_date>?national=true` > 109.json
 
-Requesting /<election_date>?position=0&playback=1 will reset to the default position
+Requesting /<election_date>?position=0&playback=1&national=true will reset to the default position
 and playback speeds, respectively.
 
 #### Status
