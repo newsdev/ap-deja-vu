@@ -58,17 +58,27 @@ Your data directory should contain a series of folders corresponding to AP elect
 ```bash
 /tmp/
     /ap-elex-data/
-        /2015-02-01/
-            001.json
-            002.json
-            003.json
-        /2015-02-09/
-            001.json
-            002.json
-            003.json
+        /2016-02-01/
+                /local/
+                    001.json
+                    002.json
+                    003.json
+                /national/
+                    001.json
+                    002.json
+                    003.json
+        /2016-02-09/
+                /local/
+                    001.json
+                    002.json
+                    003.json
+                /national/
+                    001.json
+                    002.json
+                    003.json
 ```
 
-We recommend [Elex](https://github.com/newsdev/elex/) for capturing and parsing AP election data. Pay particular attention to [this section on recording results](http://elex.readthedocs.org/en/latest/recording.html#flat-files). 
+We recommend The New York Times's [Elex-loader](https://github.com/newsdev/elex-loader/) for capturing and parsing AP election data. Pay particular attention to [the `get_national_results` and `get_local_results` functions in this script](https://github.com/newsdev/elex-loader/blob/master/scripts/stg/_results.sh). 
 
 #### Playback
 
