@@ -44,7 +44,7 @@ def index():
     for e in elections:
         for level in ['local', 'national', 'districts']:
             national = False
-            if level == 'national':
+            if level != 'local':
                 national = True
             e_dict = {}
             election_key = 'AP_DEJAVU_%s' % e
