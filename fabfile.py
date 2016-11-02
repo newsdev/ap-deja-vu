@@ -8,7 +8,10 @@ from fabric.state import env
 PROJECT_NAME = 'ap-deja-vu'
 ENVIRONMENTS = {
     "stg": {
-        "hosts": "107.20.172.193",
+        "hosts": "int-elex-stg-east.newsdev.net",
+    },
+    "stg-west": {
+        "hosts": "int-elex-stg-west.newsdev.net",
     }
 }
 
