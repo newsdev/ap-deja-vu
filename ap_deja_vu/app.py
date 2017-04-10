@@ -42,10 +42,8 @@ def index():
     elections = sorted([a.split('/')[-1] for a in glob.glob('%s/*' % DATA_DIR) if re.match('(\d{2,4}[-]\d{2,4}[-]\d{2,4})', a.split('/')[-1])], key=lambda x:x)
 
     for e in elections:
-        for level in ['local', 'national', 'districts']:
-            national = False
-            if level != 'local':
-                national = True
+        for level in ['national']:
+            national = True
             e_dict = {}
             election_key = 'AP_DEJAVU_%s' % e
             e_dict['election_date'] = e
