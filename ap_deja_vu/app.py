@@ -24,13 +24,13 @@ RATELIMITED_STRING = """
 </Error>
 """
 
-RATELIMITED_HEADERS = {"Connection": "keep-alive","Content-Length": 199,"Content-Type": "text/xml","Date": "Fri, 29 Jan 2016 16:54:17 GMT","Server": "Apigee Router"}
-ERRORMODE_HEADERS = {"Connection": "keep-alive","Content-Type": "text/json","Date": "Fri, 29 Jan 2016 16:54:17 GMT","Server": "Apigee Router"}
+RATELIMITED_HEADERS = {"Connection": "keep-alive","Content-Length": 199,"Content-Type": "text/xml","Date": "Fri, 29 Jan 2017 16:54:17 GMT","Server": "Apigee Router"}
+ERRORMODE_HEADERS = {"Connection": "keep-alive","Content-Type": "text/json","Date": "Fri, 29 Jan 2017 16:54:17 GMT","Server": "Apigee Router"}
 
 r_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
-@app.route('/elections/2016/ap-deja-vu/')
+@app.route('/elections/2017/ap-deja-vu/')
 def index():
     """
     Will match directories named like the following:
@@ -60,7 +60,7 @@ def index():
             context['elections'].append(e_dict)
     return render_template('index.html', **context)
 
-@app.route('/elections/2016/ap-deja-vu/elections/<election_date>/status')
+@app.route('/elections/2017/ap-deja-vu/elections/<election_date>/status')
 def status(election_date):
     """
     The route /<election_date>/status will return the status of a given
@@ -97,7 +97,7 @@ def status(election_date):
                 'level': LEVEL
             })
 
-@app.route('/elections/2016/ap-deja-vu/reports/<reportid>')
+@app.route('/elections/2017/ap-deja-vu/reports/<reportid>')
 def delegates(reportid):
     if reportid == "1":
         with open('delSum.json', 'r') as readfile:
@@ -109,11 +109,11 @@ def delegates(reportid):
 
     return payload
 
-@app.route('/elections/2016/ap-deja-vu/reports')
+@app.route('/elections/2017/ap-deja-vu/reports')
 def reports():
     return json.dumps({"reports": [{"id": "1", "title": "Delegates / delsum"},{"id": "2", "title": "Delegates / delsuper"}]})
 
-@app.route('/elections/2016/ap-deja-vu/elections/<election_date>')
+@app.route('/elections/2017/ap-deja-vu/elections/<election_date>')
 def replay(election_date):
     """
     The route `/<election_date>` will replay the election files found in the folder
