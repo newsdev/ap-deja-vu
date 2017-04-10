@@ -30,7 +30,7 @@ ERRORMODE_HEADERS = {"Connection": "keep-alive","Content-Type": "text/json","Dat
 r_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
-@app.route('/elections/2016/deja-vu/')
+@app.route('/elections/2016/ap-deja-vu/')
 def index():
     """
     Will match directories named like the following:
@@ -60,7 +60,7 @@ def index():
             context['elections'].append(e_dict)
     return render_template('index.html', **context)
 
-@app.route('/elections/2016/deja-vu/elections/<election_date>/status')
+@app.route('/elections/2016/ap-deja-vu/elections/<election_date>/status')
 def status(election_date):
     """
     The route /<election_date>/status will return the status of a given
@@ -89,7 +89,7 @@ def status(election_date):
     ratelimited = utils.to_bool(r_conn.get(election_key + '_RATELIMITED') or 'False')
 
     return json.dumps({
-                'playback': playback, 
+                'playback': playback,
                 'position': position,
                 'errormode': errormode,
                 'ratelimited': ratelimited,
@@ -97,7 +97,7 @@ def status(election_date):
                 'level': LEVEL
             })
 
-@app.route('/elections/2016/deja-vu/reports/<reportid>')
+@app.route('/elections/2016/ap-deja-vu/reports/<reportid>')
 def delegates(reportid):
     if reportid == "1":
         with open('delSum.json', 'r') as readfile:
@@ -109,11 +109,11 @@ def delegates(reportid):
 
     return payload
 
-@app.route('/elections/2016/deja-vu/reports')
+@app.route('/elections/2016/ap-deja-vu/reports')
 def reports():
     return json.dumps({"reports": [{"id": "1", "title": "Delegates / delsum"},{"id": "2", "title": "Delegates / delsuper"}]})
 
-@app.route('/elections/2016/deja-vu/elections/<election_date>')
+@app.route('/elections/2016/ap-deja-vu/elections/<election_date>')
 def replay(election_date):
     """
     The route `/<election_date>` will replay the election files found in the folder
@@ -128,8 +128,8 @@ def replay(election_date):
 
     * `position` will return the file at this position in the hopper. So, for example,
     `position=0` would set the pointer to the the first file in the hopper and return it.
-    
-    * `playback` will increment the position by itself until it is reset. So, for example, 
+
+    * `playback` will increment the position by itself until it is reset. So, for example,
     `playback=5` would skip to every fifth file in the hopper.
 
     When the last file in the hopper has been reached, it will be returned until the Flask
