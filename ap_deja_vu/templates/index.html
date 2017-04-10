@@ -19,7 +19,7 @@
         <p>
             <pre>
 
-                <code>export AP_API_BASE_URL="http://int-elex-stg-east.newsdev.net/elections/2016/deja-vu/"</code>
+                <code>export AP_API_BASE_URL="http://{{ hostname }}/elections/2017/ap-deja-vu/"</code>
             </pre>
         </p>
     </div>
@@ -80,8 +80,8 @@
                 url: url,
                 data: params,
                 success: function(response){
-                    $($('#' + racedate + ' .' + action + ' strong')[0]).text(params[param_name]); 
-                    $($('#' + racedate + ' .' + action + ' strong')[1]).text(params[param_name]); 
+                    $($('#' + racedate + ' .' + action + ' strong')[0]).text(params[param_name]);
+                    $($('#' + racedate + ' .' + action + ' strong')[1]).text(params[param_name]);
                 }
             });
 
