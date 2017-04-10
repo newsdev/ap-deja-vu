@@ -81,7 +81,7 @@ def status(election_date):
 
     election_key = 'AP_DEJAVU_%s' % election_date
 
-    hopper = sorted(glob.glob('%s%s/%s/*' % (DATA_DIR, election_date, LEVEL)), key=lambda x:x.split('recording-')[1])
+    hopper = sorted(glob.glob('%s%s/%s/*' % (DATA_DIR, election_date, LEVEL)), key=lambda x:x)
 
     position = int(r_conn.get(election_key + '_POSITION') or 0)
     playback = int(r_conn.get(election_key + '_PLAYBACK') or 1)
@@ -170,7 +170,7 @@ def replay(election_date):
 
     election_key = 'AP_DEJAVU_%s' % election_date
 
-    hopper = sorted(glob.glob('%s%s/%s/*' % (DATA_DIR, election_date, LEVEL)), key=lambda x:x.split('recording-')[1])
+    hopper = sorted(glob.glob('%s%s/%s/*' % (DATA_DIR, election_date, LEVEL)), key=lambda x:x)
 
     position = int(r_conn.get(election_key + '_POSITION') or 0)
     playback = int(r_conn.get(election_key + '_PLAYBACK') or 1)
