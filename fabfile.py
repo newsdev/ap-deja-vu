@@ -58,7 +58,7 @@ def pull():
 
 @api.task
 def pip_install():
-    api.run('workon %s && pip install -r requirements.txt' % PROJECT_NAME)
+    api.run('workon %s && cd /home/ubuntu/%s && pip install -r requirements.txt' % (PROJECT_NAME, PROJECT_NAME))
 
 @api.task
 def bounce():
