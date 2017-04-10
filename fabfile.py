@@ -7,7 +7,7 @@ from fabric.state import env
 
 PROJECT_NAME = 'ap-deja-vu'
 ENVIRONMENTS = {
-    "adm3": {
+    "adm": {
         "hosts": "int-newsapps-adm-east.newsdev.net",
     },
 }
@@ -62,7 +62,7 @@ def pip_install():
 
 @api.task
 def bounce():
-    api.run('sudo service %s restart' % PROJECT_NAME)
+    api.run('touch /home/ubuntu/%s/ap_deja_vu/app.py' % PROJECT_NAME)
 
 @api.task
 def deploy():
