@@ -154,17 +154,22 @@ def replay(election_date):
     and playback speeds, respectively.
     """
 
-    if request.args.get('national', None) and request.args.get('level', None):
-        LEVEL = 'local'
-        if request.args['national'].lower() == 'true':
-            LEVEL = 'national'
-        if request.args['level'] == 'district':
-            LEVEL = 'districts'
-    else:
-        return json.dumps({
-            'error': True,
-            'message': 'must specify national=true or national=false and level=ru or level=district'
-        })
+    LEVEL = 'national'
+    if request.args.get('national', None):
+        if request.args['national'].lower() == 'false':
+            LEVEL = 'local'
+
+    # if request.args.get('national', None) and request.args.get('level', None):
+    #     LEVEL = 'local'
+    #     if request.args['national'].lower() == 'true':
+    #         LEVEL = 'national'
+    #     if request.args['level'] == 'district':
+    #         LEVEL = 'districts'
+    # else:
+    #     return json.dumps({
+    #         'error': True,
+    #         'message': 'must specify national=true or national=false and level=ru or level=district'
+    #     })
 
     election_key = 'AP_DEJAVU_%s' % election_date
 
