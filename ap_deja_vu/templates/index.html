@@ -36,20 +36,20 @@
         </tr>
         {% for e in elections %}
         <tr id="election-{{ e.election_date }}">
-            <td class="col-md-2"><a href="/elections/2017/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">{{ e.title }}</a></td>
+            <td class="col-md-2"><a href="/elections/{{ year }}/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">{{ e.title }}</a></td>
             <td class="position">
                 <strong>{{ e.position }}</strong>&nbsp;/&nbsp;{{ e.total_positions }}&nbsp;
-                <a class="ajax" id="position-zero" href="/elections/2017/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">&#x21BA;</a>
+                <a class="ajax" id="position-zero" href="/elections/{{ year }}/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">&#x21BA;</a>
             </td>
             <td class="playback">
                 <strong>{{ e.playback }}</strong>&nbsp;
-                <a class="ajax" id="playback-up" href="/elections/2017/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">&uarr;</a>&nbsp;
-                <a class="ajax" id="playback-down" href="/elections/2017/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">&darr;</a>&nbsp;
-                <a class="ajax" id="playback-one" href="/elections/2017/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">&#x21BA;</a>
+                <a class="ajax" id="playback-up" href="/elections/{{ year }}/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">&uarr;</a>&nbsp;
+                <a class="ajax" id="playback-down" href="/elections/{{ year }}/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">&darr;</a>&nbsp;
+                <a class="ajax" id="playback-one" href="/elections/{{ year }}/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">&#x21BA;</a>
             </td>
             <td class="errormode">
-                <a class="{% if e.errormode %}{% else %}mode-off {% endif %}ajax-toggle" id="errormode" href="/elections/2017/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">500</a>&nbsp;&nbsp;
-                <a class="{% if e.ratelimited %}{% else %}mode-off {% endif %}ajax-toggle" id="ratelimited" href="/elections/2017/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">403</a>
+                <a class="{% if e.errormode %}{% else %}mode-off {% endif %}ajax-toggle" id="errormode" href="/elections/{{ year }}/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">500</a>&nbsp;&nbsp;
+                <a class="{% if e.ratelimited %}{% else %}mode-off {% endif %}ajax-toggle" id="ratelimited" href="/elections/{{ year }}/ap-deja-vu/elections/{{ e.election_date }}?national={{ e.national|lower }}&level=ru">403</a>
             </td>
         </tr>
         {% endfor %}
