@@ -39,6 +39,7 @@ def index(year):
     """
     context = utils.build_context()
     context['elections'] = []
+    context['year'] = year
     elections = sorted([a.split('/')[-1] for a in glob.glob('%s/*' % DATA_DIR) if re.match('(\d{2,4}[-]\d{2,4}[-]\d{2,4})', a.split('/')[-1])], key=lambda x:x)
 
     for e in elections:
