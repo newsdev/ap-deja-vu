@@ -31,7 +31,7 @@ r_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 @app.route('/elections/<year>/ap-deja-vu/')
-def index():
+def index(year):
     """
     Will match directories named like the following:
     2015-09-10
@@ -59,7 +59,7 @@ def index():
     return render_template('index.html', **context)
 
 @app.route('/elections/<year>/ap-deja-vu/elections/<election_date>/status')
-def status(election_date):
+def status(year, election_date):
     """
     The route /<election_date>/status will return the status of a given
     election date test, including the current position in the hopper, the
@@ -96,7 +96,7 @@ def status(election_date):
             })
 
 @app.route('/elections/<year>/ap-deja-vu/reports/<reportid>')
-def delegates(reportid):
+def delegates(year, reportid):
     if reportid == "1":
         with open('delSum.json', 'r') as readfile:
             payload = str(readfile.read())
@@ -108,11 +108,11 @@ def delegates(reportid):
     return payload
 
 @app.route('/elections/<year>/ap-deja-vu/reports')
-def reports():
+def reports(year):
     return json.dumps({"reports": [{"id": "1", "title": "Delegates / delsum"},{"id": "2", "title": "Delegates / delsuper"}]})
 
 @app.route('/elections/<year>/ap-deja-vu/elections/<election_date>')
-def replay(election_date):
+def replay(year, election_date):
     """
     The route `/<election_date>` will replay the election files found in the folder
     `/<DATA_DIR>/<election_date>/`. The files should be named such that the first file
